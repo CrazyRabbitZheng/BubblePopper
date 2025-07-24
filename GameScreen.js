@@ -39,6 +39,7 @@ import backgroundImg from './assets/sky.png'; // This is the game background png
 import { Audio } from 'expo-av';
 import popSoundFile from './assets/oneSecondBubblePopSound.wav';// Bubble pop sound for single bubble.
 import laserSoundFile from './assets/laserGun.wav';// Sound for laser gun.
+import rainbowGun from './assets/rainbowGun.png';
 
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
@@ -73,16 +74,16 @@ export default function GameScreen() {
    * 3. Ensure the gun stays within screen boundaries
    * 
    * Example implementation approach:
-   * const [gunPosition, setGunPosition] = useState({ 
+   * const [gunX, setGunX] = useState({
    *   x: screenWidth / 2 - gunWidth / 2, 
    *   y: screenHeight - 70
    * });
    */
   
   // Fixed gun position - currently in the middle (MODIFY THIS)
-  const gunWidth = 60;
-  const gunPosition = screenWidth / 2 - gunWidth / 2;
-  const gunCenterX = screenWidth / 2;
+  const gunWidth = 390;
+  const [gunX, setGunX] = useState(screenWidth / 2 - gunWidth / 2);
+  const gunCenterX = gunX + gunWidth / 2;
   
   /**
    * ============== STUDENT TASK 2 ==============
@@ -97,7 +98,7 @@ export default function GameScreen() {
    * const handleTouchMove = (event) => {
    *   const { locationX, locationY } = event.nativeEvent;
    *   // Apply constraints to keep gun on screen
-   *   setGunPosition({ x: locationX - gunWidth/2, y: locationY });
+   *   setGunX({ x: locationX - gunWidth/2, y: locationY });
    * };
    */
   
@@ -431,11 +432,11 @@ export default function GameScreen() {
            * 3. Add controls or touch areas for movement
            */}
           
-          {/* Gun - currently static in middle */}
-          <View style={[styles.gun, { left: gunPosition }]}>
-            <View style={styles.gunBase} />
-            <View style={styles.gunBarrel} />
-          </View>
+          {/* Gun - changed to a gun image */}
+          <Image
+            source={rainbowGun}
+            style={[styles.gunImage, { left: gunX }]}
+          />
           </View>
         </ImageBackground>
       </TouchableWithoutFeedback>
@@ -555,32 +556,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  gun: {
-    position: 'absolute',
-    bottom: 10,
-    width: 60,
-    height: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 50,
-    backgroundColor: '#555',
-    borderRadius: 5,
-  },
-  gunBase: {
+  gunImage: {
     position: 'absolute',
     bottom: 0,
-    width: 40,
-    height: 20,
-    backgroundColor: '#333',
-    borderTopLeftRadius: 5,
-    borderTopRightRadius: 5,
-  },
-  gunBarrel: {
-    position: 'absolute',
-    bottom: 20,
-    width: 10,
-    height: 30,
-    backgroundColor: '#222',
+    width: 390,
+    height: 300,
+    resizeMode: 'contain',
+    zIndex: 50,
   },
   laser: {
     position: 'absolute',

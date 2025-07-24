@@ -12,7 +12,10 @@
 6. Added text '+1' when hit a bubble. Added scorePopups state in GameScreen.js
 7. Changed login icon.
 8. Added theme image -- rainbow, to the start screen and game over screen.
-9. 
+
+
+changed timer from 120s to 20s for easy outcome.
+changed useState(120), in startGame() and resetGame(), both changed setTimeLeft(120) to 20s.
 
 
 
