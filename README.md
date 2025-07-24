@@ -1,3 +1,17 @@
+# Zheng's modification
+1. Added customized background image.
+2. Changed bubble colors to rainbow
+3. Cleared all bubbles when Game Over.
+TODO 4. Added laser sound effect.
+TODO 5. Added bubble popping sound effect.
+TODO 6. Changed login icon.
+
+
+
+
+
+
+
 # Bubble Popper Game
 
 A React Native mobile game built with Expo CLI for CP4282 Programming for Mobile Devices.
