@@ -37,6 +37,7 @@ import { ImageBackground } from 'react-native';
 import backgroundImg from './assets/sky.png'; // This is the game background png.
 import { Audio } from 'expo-av';
 import popSoundFile from './assets/oneSecondBubblePopSound.wav';// Bubble pop sound for single bubble.
+import laserSoundFile from './assets/laserGun.wav';// Sound for laser gun.
 
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
@@ -125,6 +126,8 @@ export default function GameScreen() {
     
     // Make laser visible
     setLaserVisible(true);
+    //Play laser gun shot sound
+    playLaserSound();
     
     /**
      * ============== STUDENT TASK 3 ==============
@@ -218,6 +221,21 @@ export default function GameScreen() {
           console.warn('Failed to play single pop sound.');
           }
       };
+
+  // play laser gun shot sound when fire.
+    const playLaserSound = async () => {
+        try{
+            const { sound } = await Audio.Sound.createAsync(laserSoundFile);
+            await sound.playAsync();
+            sound.setOnPlaybackStatusUpdate((status) => {
+                if (status.didJustFinish) {
+                    sound.unloadAsync();
+                }
+            });
+        } catch (error) {
+        console.warn('Failed to play laser gun shot.');
+        }
+    }
   
   /**
    * Spawn a new bubble with random horizontal position

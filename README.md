@@ -6,11 +6,11 @@
    However, when I clicked the 'Play Again', it displayed 'Start Game'. 
    What I expected is  when click 'Play Again', it immediately restarts the game. I don't double clicking to re-play. 
    Fixed this.
-5. Added bubble popping sound effect. installed expo-av API to add sound effects.
-   Added .wav file to assets for single bubble pop.
+5. Added sound effects. Installed expo-av API to add sound effects.
+   Added .wav file to assets for single bubble pop. 
+   Added .wav file to assets for laser gun shot.
 
-
-TODO 4. Added laser sound effect.
+   
 
 TODO 6. Changed login icon.
 5. TODO. ADD fade away effects so that when game over auto pops all bubbles left.
