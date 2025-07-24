@@ -9,14 +9,11 @@
 5. Added sound effects. Installed expo-av API to add sound effects.
    Added .wav file to assets for single bubble pop. 
    Added .wav file to assets for laser gun shot.
-
 6. Added text '+1' when hit a bubble. Added scorePopups state in GameScreen.js
+7. Changed login icon.
 
 
-
-TODO 6. Changed login icon.
 5. TODO. ADD fade away effects so that when game over auto pops all bubbles left.
-6. when hit a bubble show +1 on top of bubble
 
 
 
