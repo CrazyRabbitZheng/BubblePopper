@@ -35,6 +35,8 @@ import { StyleSheet, View, Text, Dimensions, TouchableWithoutFeedback } from 're
 import Bubble from './components/Bubble';
 import { ImageBackground } from 'react-native';
 import backgroundImg from './assets/sky.png'; // This is the game background png.
+import { Audio } from 'expo-av';
+import popSoundFile from './assets/oneSecondBubblePopSound.wav';// Bubble pop sound for single bubble.
 
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
@@ -142,6 +144,7 @@ export default function GameScreen() {
     
     // Check for hits immediately
     checkHits(gunCenterX);
+
     
     // Make laser disappear after 300ms
     laserTimeoutRef.current = setTimeout(() => {
@@ -191,6 +194,7 @@ export default function GameScreen() {
       
       // If any bubbles were hit, update the score
       if (hitCount > 0) {
+        playPopSound();// play single pop sound on hit
         setScore(prevScore => prevScore + hitCount);
       }
       
@@ -198,6 +202,22 @@ export default function GameScreen() {
       return prevBubbles.filter(bubble => !hitBubbleIds.includes(bubble.id));
     });
   };
+
+
+  // play single bubble pop sound when hit a bubble
+      const playPopSound = async () => {
+          try {
+              const { sound } = await Audio.Sound.createAsync(popSoundFile);
+              await sound.playAsync();
+              sound.setOnPlaybackStatusUpdate((status) => {
+                  if (status.didJustFinish){
+                  sound.unloadAsync();
+                  }
+              });
+          } catch (error) {
+          console.warn('Failed to play single pop sound.');
+          }
+      };
   
   /**
    * Spawn a new bubble with random horizontal position
@@ -389,7 +409,7 @@ export default function GameScreen() {
         <View style={styles.overlay}>
           <Text style={styles.title}>Game Over</Text>
           <Text style={styles.scoreText}>Final Score: {score}</Text>
-          <TouchableWithoutFeedback onPress={resetGame}>
+          <TouchableWithoutFeedback onPress={startGame}>{/* Changed the onPress from resetGame to startGame, so you wont need double clicking to play again.*/}
             <View style={styles.button}>
               <Text style={styles.buttonText}>Play Again</Text>
             </View>

@@ -2,9 +2,19 @@
 1. Added customized background image.
 2. Changed bubble colors to rainbow
 3. Cleared all bubbles when Game Over.
+4. Refined the game -- when game was over, it displayed 'GAME OVER' and a button labels 'Play Again',
+   However, when I clicked the 'Play Again', it displayed 'Start Game'. 
+   What I expected is  when click 'Play Again', it immediately restarts the game. I don't double clicking to re-play. 
+   Fixed this.
+5. Added bubble popping sound effect. installed expo-av API to add sound effects.
+   Added .wav file to assets for single bubble pop.
+
+
 TODO 4. Added laser sound effect.
-TODO 5. Added bubble popping sound effect.
+
 TODO 6. Changed login icon.
+5. TODO. ADD fade away effects so that when game over auto pops all bubbles left.
+6. when hit a bubble show +1 on top of bubble
 
 
 
