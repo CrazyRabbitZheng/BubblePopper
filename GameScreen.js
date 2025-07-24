@@ -60,6 +60,7 @@ export default function GameScreen() {
   const [timeLeft, setTimeLeft] = useState(120);
   const [bubbles, setBubbles] = useState([]);
   const [laserVisible, setLaserVisible] = useState(false);
+  const [scorePopups, setScorePopups] = useState([]); //added useState for text '+1'
   
   /**
    * ============== STUDENT TASK 1 ==============
@@ -199,6 +200,22 @@ export default function GameScreen() {
       if (hitCount > 0) {
         playPopSound();// play single pop sound on hit
         setScore(prevScore => prevScore + hitCount);
+
+        // show text '+1' on top of bubble
+        const newPopups = prevBubbles
+            .filter(bubble => hitBubbleIds.includes(bubble.id))
+            .map(bubble => ({
+                id: bubble.id,
+                x: bubble.x,
+                y: bubble.y,
+            }));
+
+        setScorePopups(prev => [...prev, ...newPopups]);
+
+        // Remove popup after 500 ms
+        setTimeout(() => {
+            setScorePopups(prev => prev.filter(p => !hitBubbleIds.includes(p.id)));
+        }, 500)
       }
       
       // Return bubbles that weren't hit
@@ -363,6 +380,24 @@ export default function GameScreen() {
               radius={bubble.radius}
               color={bubble.color}
             />
+          ))}
+
+          {/* Now render the pop up text "+1"*/}
+          {scorePopups.map(popup => (
+          <Text
+            key={`popup-${popup.id}`}
+            style={{
+                position: 'absolute',
+                left: popup.x + 10,
+                top: popup.y - 20,
+                color: 'white',
+                fontSize: 22,
+                fontWeight: 'bold',
+                backgroundColor: 'transparent',
+            }}
+          >
+            +1
+          </Text>
           ))}
           
           {/**
