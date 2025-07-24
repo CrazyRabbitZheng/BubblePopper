@@ -34,6 +34,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, View, Text, Dimensions, TouchableWithoutFeedback } from 'react-native';
 import Bubble from './components/Bubble';
 import { ImageBackground } from 'react-native';
+import { Image } from 'react-native';
 import backgroundImg from './assets/sky.png'; // This is the game background png.
 import { Audio } from 'expo-av';
 import popSoundFile from './assets/oneSecondBubblePopSound.wav';// Bubble pop sound for single bubble.
@@ -57,7 +58,7 @@ export default function GameScreen() {
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(120);
+  const [timeLeft, setTimeLeft] = useState(20);
   const [bubbles, setBubbles] = useState([]);
   const [laserVisible, setLaserVisible] = useState(false);
   const [scorePopups, setScorePopups] = useState([]); //added useState for text '+1'
@@ -284,7 +285,7 @@ export default function GameScreen() {
     setGameStarted(true);
     setGameOver(false);
     setScore(0);
-    setTimeLeft(120);
+    setTimeLeft(20);
     setBubbles([]);
     setLaserVisible(false);
     bubbleIdRef.current = 1;
@@ -318,7 +319,7 @@ export default function GameScreen() {
     setGameOver(false);
     setBubbles([]);
     setScore(0);
-    setTimeLeft(120);
+    setTimeLeft(20);
     setLaserVisible(false);
     bubbleIdRef.current = 1;
     
@@ -449,6 +450,12 @@ export default function GameScreen() {
       {!gameStarted && !gameOver && (
         <View style={styles.overlay}>
           <Text style={styles.title}>Bubble Popper</Text>
+          {/* Insert the rainbow image between the text and the button. */}
+          <Image
+            source={require('./assets/rainbowCloudScreen.png')}
+            style={styles.rainbow}
+            resizeMode="contain"
+          />
           <TouchableWithoutFeedback onPress={startGame}>
             <View style={styles.button}>
               <Text style={styles.buttonText}>Start Game</Text>
@@ -460,8 +467,15 @@ export default function GameScreen() {
       {/* Game Over Screen */}
       {gameOver && (
         <View style={styles.overlay}>
+          {/* Insert rainbow image above text. */}
+          <Image
+            source={require('./assets/rainbowCloudScreen.png')}
+            style={styles.rainbow}
+            resizeMode="contain"
+          />
+
           <Text style={styles.title}>Game Over</Text>
-          <Text style={styles.scoreText}>Final Score: {score}</Text>
+          <Text style={[styles.scoreText, { marginBottom: 17}]}>Final Score: {score}</Text>
           <TouchableWithoutFeedback onPress={startGame}>{/* Changed the onPress from resetGame to startGame, so you wont need double clicking to play again.*/}
             <View style={styles.button}>
               <Text style={styles.buttonText}>Play Again</Text>
@@ -514,8 +528,9 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
+    paddingTop: 280, //Since I changed justifyContent from center to flex-start, I need to add padding on top of the image.
     zIndex: 100,
   },
   title: {
@@ -523,6 +538,11 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
     marginBottom: 20,
+  },
+  rainbow:{
+    width: 120,
+    height: 120,
+    marginVertical: 20,
   },
   button: {
     backgroundColor: '#4CAF50',

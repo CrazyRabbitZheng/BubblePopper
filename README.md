@@ -11,9 +11,9 @@
    Added .wav file to assets for laser gun shot.
 6. Added text '+1' when hit a bubble. Added scorePopups state in GameScreen.js
 7. Changed login icon.
+8. Added theme image -- rainbow, to the start screen and game over screen.
+9. 
 
-
-5. TODO. ADD fade away effects so that when game over auto pops all bubbles left.
 
 
 
