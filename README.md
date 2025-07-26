@@ -33,7 +33,7 @@
     Instead, added a Svg Line component.
 16. import Svg, { Line, Defs, LinearGradient, Stop} from 'react-native-svg'
     Made the gun beam displays 7 colors totally when you drag the gun to shot from different angle.
-17. Changed timer from 120s to 30s for easy outcome.
+17. Changed timer from 120s to 60s for easy outcome.
 
 
 
