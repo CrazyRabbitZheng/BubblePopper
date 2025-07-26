@@ -103,7 +103,8 @@ BubblePopper/
 
 ## Game Controls
 
-- **Tap anywhere**: Shoot laser
+- **Drag the gun**: Move the gun freely around the screen
+- **Tap anywhere**: Auto-aim and fire a rainbow laser in the tap direction
 - **Start Game button**: Begin new game
 - **Play Again button**: Restart after game over
 
