@@ -24,7 +24,7 @@ export default function GameScreen() {
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(30);
+  const [timeLeft, setTimeLeft] = useState(60);
   const [bubbles, setBubbles] = useState([]);
   const [poppingBubbles, setPoppingBubbles] = useState([]);
   const [laserData, setLaserData] = useState(null);
@@ -202,7 +202,7 @@ const checkHits = (laserX, laserY, laserAngle) => {
     setGameStarted(true);
     setGameOver(false);
     setScore(0);
-    setTimeLeft(30);
+    setTimeLeft(60);
     setBubbles([]);
     setGunAngle(0);
     bubbleIdRef.current = 1;
