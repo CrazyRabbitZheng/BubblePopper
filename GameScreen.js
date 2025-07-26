@@ -15,9 +15,9 @@ const rainbowColors = ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#
 const LASER_LENGTH = screenHeight * 1.5;
 
 export default function GameScreen() {
-  const gunWidth = 390;
+  const gunWidth = 75;//was 390
   const gunHeight = 300;
-  const tipOffset = 134;
+  const tipOffset = 149;
 
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
@@ -49,6 +49,7 @@ export default function GameScreen() {
   const timerRef = useRef(null);
   const bubbleTimerRef = useRef(null);
   const laserTimeoutRef = useRef(null);
+  const canFireRef = useRef(true);// to avoid some taps being ignored.
 
   const handleTap = (event) => {
     if (!gameStarted || gameOver) return;
@@ -70,12 +71,20 @@ export default function GameScreen() {
   };
 
   const fireLaser = (x, y, angle) => {
+    if (!canFireRef.current) return;
+    canFireRef.current = false;
+
     if (laserTimeoutRef.current) clearTimeout(laserTimeoutRef.current);
+
     setLaserData({ x, y, angle });
     setLaserVisible(true);
     playLaserSound();
     checkHits(x, y, angle);
-    laserTimeoutRef.current = setTimeout(() => setLaserVisible(false), 300);
+
+    laserTimeoutRef.current = setTimeout(() => {
+        setLaserVisible(false);
+        canFireRef.current = true; //re-enable firing.
+        }, 300);
   };
 
   const checkHits = (laserX, laserY, laserAngle) => {
@@ -276,5 +285,5 @@ const styles = StyleSheet.create({
   rainbow: { width: 120, height: 120, marginVertical: 20 },
   button: { backgroundColor: '#4CAF50', paddingVertical: 12, paddingHorizontal: 30, borderRadius: 25 },
   buttonText: { color: 'white', fontSize: 18, fontWeight: 'bold' },
-  gunImage: { position: 'absolute', bottom: 0, width: 390, height: 300, resizeMode: 'contain', zIndex: 50 }
+  gunImage: { position: 'absolute', bottom: 0, width: 75, height: 300, resizeMode: 'contain', zIndex: 50 }
 });
