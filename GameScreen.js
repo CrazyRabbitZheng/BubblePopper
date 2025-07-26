@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, View, Text, Dimensions, TouchableWithoutFeedback, Image, PanResponder, Animated } from 'react-native';
+import { StyleSheet, View, Text, Dimensions, Pressable, Image, PanResponder, Animated } from 'react-native';
 import { ImageBackground } from 'react-native';
 import { Audio } from 'expo-av';
 import Bubble from './components/Bubble';
@@ -49,8 +49,6 @@ export default function GameScreen() {
   const bubbleIdRef = useRef(1);
   const timerRef = useRef(null);
   const bubbleTimerRef = useRef(null);
-  const laserTimeoutRef = useRef(null);
-  const canFireRef = useRef(true);// to avoid some taps being ignored.
 
   const handleTap = (event) => {
     if (!gameStarted || gameOver) return;
@@ -91,19 +89,10 @@ export default function GameScreen() {
   };
 
     const fireLaser = (x, y, angle) => {
-        if (!canFireRef.current) return;
-        canFireRef.current = false;
-
-        if (laserTimeoutRef.current) clearTimeout(laserTimeoutRef.current);
-
-    setLaserData({ x, y, angle });
-    playLaserSound();
-    checkHits(x, y, angle);
-
-    laserTimeoutRef.current = setTimeout(() => {
-        canFireRef.current = true; //re-enable firing.
-        }, 300);
-  };
+        setLaserData({ x, y, angle });
+        playLaserSound();
+        checkHits(x, y, angle);
+    };
 
 const checkHits = (laserX, laserY, laserAngle) => {
   const laserDirX = Math.cos(laserAngle);
@@ -235,13 +224,12 @@ const checkHits = (laserX, laserY, laserAngle) => {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
       if (bubbleTimerRef.current) clearInterval(bubbleTimerRef.current);
-      if (laserTimeoutRef.current) clearTimeout(laserTimeoutRef.current);
     };
   }, []);
 
   return (
     <View style={styles.container}>
-      <TouchableWithoutFeedback onPress={handleTap} disabled={!gameStarted || gameOver}>
+      <Pressable style={{ flex: 1}} onPress={handleTap} disabled={!gameStarted || gameOver}>
         <ImageBackground source={backgroundImg} style={styles.gameArea} resizeMode='cover'>
           <View style={{ flex: 1 }}>
             {bubbles.map(b => (
@@ -306,7 +294,7 @@ const checkHits = (laserX, laserY, laserAngle) => {
               }]} />
           </View>
         </ImageBackground>
-      </TouchableWithoutFeedback>
+      </Pressable>
 
       <View style={styles.hudContainer}>
         <Text style={styles.scoreText}>Score: {score}</Text>
@@ -317,9 +305,9 @@ const checkHits = (laserX, laserY, laserAngle) => {
         <View style={styles.overlay}>
           <Text style={styles.title}>Bubble Popper</Text>
           <Image source={require('./assets/rainbowCloudScreen.png')} style={styles.rainbow} resizeMode="contain" />
-          <TouchableWithoutFeedback onPress={startGame}>
+          <Pressable onPress={startGame}>
             <View style={styles.button}><Text style={styles.buttonText}>Start Game</Text></View>
-          </TouchableWithoutFeedback>
+          </Pressable>
         </View>
       )}
 
@@ -328,9 +316,9 @@ const checkHits = (laserX, laserY, laserAngle) => {
           <Image source={require('./assets/rainbowCloudScreen.png')} style={styles.rainbow} resizeMode="contain" />
           <Text style={styles.title}>Game Over</Text>
           <Text style={[styles.scoreText, { marginBottom: 17 }]}>Final Score: {score}</Text>
-          <TouchableWithoutFeedback onPress={startGame}>
+          <Pressable onPress={startGame}>
             <View style={styles.button}><Text style={styles.buttonText}>Play Again</Text></View>
-          </TouchableWithoutFeedback>
+          </Pressable>
         </View>
       )}
     </View>
