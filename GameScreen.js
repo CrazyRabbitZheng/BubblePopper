@@ -9,10 +9,12 @@ import backgroundImg from './assets/sky.png';
 import popSoundFile from './assets/oneSecondBubblePopSound.wav';
 import laserSoundFile from './assets/laserGun.wav';
 import rainbowGun from './assets/rainbowGun.png';
+import Svg, { Line, Defs, LinearGradient, Stop } from 'react-native-svg';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 const rainbowColors = ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#8B00FF'];
 const LASER_LENGTH = screenHeight * 1.5;
+const LASER_THICKNESS = 4; //treat laser line as rectangle
 
 export default function GameScreen() {
   const gunWidth = 75;//was 390
@@ -25,8 +27,8 @@ export default function GameScreen() {
   const [timeLeft, setTimeLeft] = useState(30);
   const [bubbles, setBubbles] = useState([]);
   const [poppingBubbles, setPoppingBubbles] = useState([]);
-  const [laserVisible, setLaserVisible] = useState(false);
   const [laserData, setLaserData] = useState(null);
+  const [greenLinePoints, setGreenLinePoints] = useState(null);
   const [scorePopups, setScorePopups] = useState([]);
   const [gunPosition, setGunPosition] = useState({
     x: screenWidth / 2 - gunWidth / 2,
@@ -64,63 +66,103 @@ export default function GameScreen() {
 
     const angle = Math.atan2(dy, dx);
     const correctedAngle = angle + Math.PI / 2;
+
+
     setGunAngle(correctedAngle);
 
     const tipX = gunCenterX + tipOffset * Math.cos(angle);
     const tipY = gunCenterY + tipOffset * Math.sin(angle);
-    fireLaser(tipX, tipY, correctedAngle);
+    fireLaser(tipX, tipY, angle);
+    const dirX = tipX -gunCenterX;
+    const dirY = tipY - gunCenterY;
+    const length = Math.sqrt(dirX * dirX + dirY * dirY);
+    const unitX = dirX / length;
+    const unitY = dirY / length;
+
+    const extendedX = gunCenterX + unitX * (screenHeight * 1.5);
+    const extendedY = gunCenterY + unitY * (screenHeight * 1.5);
+    setGreenLinePoints({
+        x1: gunCenterX,
+        y1: gunCenterY,
+        x2: extendedX,
+        y2: extendedY
+    });
+    setTimeout(() => setGreenLinePoints(null), 300);
+
+
   };
 
-  const fireLaser = (x, y, angle) => {
-    if (!canFireRef.current) return;
-    canFireRef.current = false;
+    const fireLaser = (x, y, angle) => {
+        if (!canFireRef.current) return;
+        canFireRef.current = false;
 
-    if (laserTimeoutRef.current) clearTimeout(laserTimeoutRef.current);
+        if (laserTimeoutRef.current) clearTimeout(laserTimeoutRef.current);
 
     setLaserData({ x, y, angle });
-    setLaserVisible(true);
     playLaserSound();
     checkHits(x, y, angle);
 
     laserTimeoutRef.current = setTimeout(() => {
-        setLaserVisible(false);
         canFireRef.current = true; //re-enable firing.
         }, 300);
   };
 
-  const checkHits = (laserX, laserY, laserAngle) => {
-    const laserDirX = Math.cos(laserAngle);
-    const laserDirY = Math.sin(laserAngle);
-    setBubbles(prevBubbles => {
-      const hitBubbleIds = [];
-      let hitCount = 0;
-      prevBubbles.forEach(bubble => {
-        const bubbleCenterX = bubble.x + bubble.radius;
-        const bubbleCenterY = bubble.y + bubble.radius;
-        const dx = bubbleCenterX - laserX;
-        const dy = bubbleCenterY - laserY;
-        const dot = dx * laserDirX + dy * laserDirY;
-        const closestX = laserX + laserDirX * dot;
-        const closestY = laserY + laserDirY * dot;
-        const distSquared = (bubbleCenterX - closestX) ** 2 + (bubbleCenterY - closestY) ** 2;
-        if (distSquared <= bubble.radius ** 2) {
-          hitBubbleIds.push(bubble.id);
-          hitCount++;
-        }
-      });
-      if (hitCount > 0) {
-        playPopSound();
-        setScore(prev => prev + hitCount);
-        const newPopups = prevBubbles.filter(b => hitBubbleIds.includes(b.id)).map(b => ({ id: b.id, x: b.x, y: b.y }));
-        setScorePopups(prev => [...prev, ...newPopups]);
-        setTimeout(() => {
-          setScorePopups(prev => prev.filter(p => !hitBubbleIds.includes(p.id)));
-        }, 500);
+const checkHits = (laserX, laserY, laserAngle) => {
+  const laserDirX = Math.cos(laserAngle);
+  const laserDirY = Math.sin(laserAngle);
+  const laserEndX = laserX + laserDirX * LASER_LENGTH;
+  const laserEndY = laserY + laserDirY * LASER_LENGTH;
+
+  setBubbles(prevBubbles => {
+    const hitBubbleIds = [];
+    let hitCount = 0;
+
+    prevBubbles.forEach(bubble => {
+      const bubbleCenterX = bubble.x + bubble.radius;
+      const bubbleCenterY = bubble.y + bubble.radius;
+
+      // Vector from laser start to bubble center
+      const dx = bubbleCenterX - laserX;
+      const dy = bubbleCenterY - laserY;
+
+      const beamDX = laserEndX - laserX;
+      const beamDY = laserEndY - laserY;
+      const beamLenSq = beamDX * beamDX + beamDY * beamDY;
+
+      // Project point onto the beam
+      let t = ((dx * beamDX) + (dy * beamDY)) / beamLenSq;
+      t = Math.max(0, Math.min(1, t)); // Clamp to segment
+
+      const closestX = laserX + t * beamDX;
+      const closestY = laserY + t * beamDY;
+
+      const distX = bubbleCenterX - closestX;
+      const distY = bubbleCenterY - closestY;
+      const distSq = distX * distX + distY * distY;
+
+      const threshold = (bubble.radius + LASER_THICKNESS / 2 + 2) ** 2;
+
+      if (distSq <= threshold) {
+        hitBubbleIds.push(bubble.id);
+        hitCount++;
       }
-      setPoppingBubbles(prev => [...prev, ...hitBubbleIds]);
-      return prevBubbles;
     });
-  };
+
+    if (hitCount > 0) {
+      playPopSound();
+      setScore(prev => prev + hitCount);
+      const newPopups = prevBubbles.filter(b => hitBubbleIds.includes(b.id)).map(b => ({ id: b.id, x: b.x, y: b.y }));
+      setScorePopups(prev => [...prev, ...newPopups]);
+      setTimeout(() => {
+        setScorePopups(prev => prev.filter(p => !hitBubbleIds.includes(p.id)));
+      }, 500);
+    }
+
+    setPoppingBubbles(prev => [...prev, ...hitBubbleIds]);
+    return prevBubbles;
+  });
+};
+
 
   const playPopSound = async () => {
     try {
@@ -162,7 +204,6 @@ export default function GameScreen() {
     setScore(0);
     setTimeLeft(30);
     setBubbles([]);
-    setLaserVisible(false);
     setGunAngle(0);
     bubbleIdRef.current = 1;
     bubbleTimerRef.current = setInterval(spawnBubble, 500);
@@ -219,24 +260,43 @@ export default function GameScreen() {
                     }}
                 />
             ))}
-            {scorePopups.map(p => (<Text key={`popup-${p.id}`} style={{ position: 'absolute', left: p.x + 10, top: p.y - 20, color: 'white', fontSize: 22, fontWeight: 'bold' }}>+1</Text>))}
+            {scorePopups.map(p => (<Text key={`popup-${p.id}-${Math.random()}`} style={{ position: 'absolute', left: p.x + 10, top: p.y - 20, color: 'white', fontSize: 22, fontWeight: 'bold' }}>+1</Text>))}
 
-            {laserVisible && laserData && (
-              <View style={{
-                position: 'absolute',
-                width: 4,
-                height: LASER_LENGTH,
-                backgroundColor: 'red',
-                left: laserData.x - 2,
-                top: laserData.y - LASER_LENGTH,
-                transform: [
-                  { translateY: LASER_LENGTH / 2 },
-                  { rotate: `${laserData.angle}rad` },
-                  { translateY: -LASER_LENGTH / 2 }
-                ],
-                zIndex: 99
-              }}/>
+
+            {greenLinePoints && (
+                <Svg
+                    style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: screenWidth,
+                        height: screenHeight,
+                    }}
+                >
+                    {/* Define gradient in line */}
+                    <Defs>
+                        <LinearGradient id ="rainbowGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <Stop offset="0%" stopColor="#FF0000" />
+                            <Stop offset="16%" stopColor="#FF7F00" />
+                            <Stop offset="33%" stopColor="#FFFF00" />
+                            <Stop offset="50%" stopColor="#00FF00" />
+                            <Stop offset="66%" stopColor="#0000FF" />
+                            <Stop offset="83%" stopColor="#4B0082" />
+                            <Stop offset="100%" stopColor="#8B00FF" />
+                        </LinearGradient>
+                    </Defs>
+
+                    <Line
+                        x1={greenLinePoints.x1}
+                        y1={greenLinePoints.y1}
+                        x2={greenLinePoints.x2}
+                        y2={greenLinePoints.y2}
+                        stroke="url(#rainbowGradient)"
+                        strokeWidth={4}
+                    />
+                </Svg>
             )}
+
 
             <Animated.Image
               {...panResponder.panHandlers}

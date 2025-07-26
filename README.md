@@ -18,6 +18,14 @@
 12. Added canFireRef to avoid multiple taps being ignored.
     Resized the gun image so that you can only drag the gun when you actually touch it. 
     The image was too wide that when you tap the left empty space of the gun, it mistakenly dragged the gun. Fixed.
+13. Added bubble popping animation. when bubble gets hit, it scale up, and then scale down, and gone.
+14. Fix the collision -- only pop a bubble if the laser beam actually intersects the bubble.
+    I changed logic to checkhits -- treat laser beam as a line with thickness. 
+    Check if each bubble intersects the line rectangle.
+15. To make gun beam displays the way it should be, not render red laser beam.
+    Instead, added a Svg Line component.
+16. import Svg, { Line, Defs, LinearGradient, Stop} from 'react-native-svg'
+    Made the gun beam displays 7 colors totally when you drag the gun to shot from different angle.
 
 changed timer from 120s to 30s for easy outcome.
 changed useState(120), in startGame(), both changed setTimeLeft(120) to 30s.

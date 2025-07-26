@@ -50,7 +50,9 @@ export default function Bubble({ x, y, radius, color, isPopping, onPopComplete }
                     useNativeDriver: true,
                 }),
             ]).start(() => {
-                onPopComplete?.();
+                requestAnimationFrame(() => {
+                    onPopComplete?.();
+                })
             });
         }
     }, [isPopping]);
