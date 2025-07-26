@@ -3,13 +3,6 @@
  * 
  * Renders a circular bubble for the Bubble Popper game.
  * Each bubble has a position (x, y) and size (radius). radius = 30
-
- * ============== STUDENT EXTENSION IDEAS ==============
- * Consider enhancing this component with:
- * 1. Different bubble types/colors
- * 2. Animation effects (pulsing, rotation)
- * 3. Pop animation when hit by laser
- * 4. Special power-up bubbles
  */
 
 import React, { useEffect, useRef } from 'react';

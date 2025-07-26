@@ -1,5 +1,3 @@
-// UPDATED VERSION OF GameScreen.js
-
 import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, View, Text, Dimensions, TouchableWithoutFeedback, Image, PanResponder, Animated } from 'react-native';
 import { ImageBackground } from 'react-native';
@@ -17,7 +15,7 @@ const LASER_LENGTH = screenHeight * 1.5;
 const LASER_THICKNESS = 4; //treat laser line as rectangle
 
 export default function GameScreen() {
-  const gunWidth = 75;//was 390
+  const gunWidth = 75;
   const gunHeight = 300;
   const tipOffset = 149;
 
