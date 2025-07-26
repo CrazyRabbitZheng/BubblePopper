@@ -2,13 +2,8 @@
  * Bubble Component
  * 
  * Renders a circular bubble for the Bubble Popper game.
- * Each bubble has a position (x, y) and size (radius).
- * 
- * CURRENT IMPLEMENTATION:
- * - Simple green circle with drop shadow
- * - Fixed radius (typically 30)
- * - Absolute positioning
- * 
+ * Each bubble has a position (x, y) and size (radius). radius = 30
+
  * ============== STUDENT EXTENSION IDEAS ==============
  * Consider enhancing this component with:
  * 1. Different bubble types/colors
@@ -17,8 +12,8 @@
  * 4. Special power-up bubbles
  */
 
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { Animated, StyleSheet } from 'react-native';
 
 /**
  * Bubble component for the Bubble Popper game
@@ -30,9 +25,38 @@ import { View, StyleSheet } from 'react-native';
  * @returns {React.Component} Rendered bubble
  */
  //I added a color prop so that each bubble has a different color, like the rainbow!
-export default function Bubble({ x, y, radius, color }) {
+export default function Bubble({ x, y, radius, color, isPopping, onPopComplete }) {
+    const scale = useRef(new Animated.Value(1)).current;
+    const opacity = useRef(new Animated.Value(1)).current;
+
+    useEffect(() => {
+        if (isPopping) {
+            Animated.parallel([
+                Animated.sequence([
+                    Animated.timing(scale, {
+                        toValue: 1.5,
+                        duration: 200,//scale up
+                        useNativeDriver: true,
+                    }),
+                    Animated.timing(scale, {
+                        toValue: 0,
+                        duration: 100,
+                        useNativeDriver: true,
+                    }),
+                ]),
+                Animated.timing(opacity, {
+                    toValue: 0,
+                    duration: 300,
+                    useNativeDriver: true,
+                }),
+            ]).start(() => {
+                onPopComplete?.();
+            });
+        }
+    }, [isPopping]);
+
   return (
-    <View
+    <Animated.View
       style={[
         styles.bubble,
         {
@@ -42,6 +66,8 @@ export default function Bubble({ x, y, radius, color }) {
           height: radius * 2,
           borderRadius: radius,
           backgroundColor: color,
+          opacity: opacity,
+          transform: [{ scale: scale}],
         },
       ]}
     />

@@ -14,10 +14,13 @@
 8. Added theme image -- rainbow, to the start screen and game over screen.
 9. Added gun image.
 10. Made the gun draggable to any position.
-11. Made the gun rotating to aim the tap point and fire laser in that direction.a
+11. Made the gun rotating to aim the tap point and fire laser in that direction.
+12. Added canFireRef to avoid multiple taps being ignored.
+    Resized the gun image so that you can only drag the gun when you actually touch it. 
+    The image was too wide that when you tap the left empty space of the gun, it mistakenly dragged the gun. Fixed.
 
-changed timer from 120s to 20s for easy outcome.
-changed useState(120), in startGame() and resetGame(), both changed setTimeLeft(120) to 20s.
+changed timer from 120s to 30s for easy outcome.
+changed useState(120), in startGame(), both changed setTimeLeft(120) to 30s.
 
 
 

@@ -24,6 +24,7 @@ export default function GameScreen() {
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(30);
   const [bubbles, setBubbles] = useState([]);
+  const [poppingBubbles, setPoppingBubbles] = useState([]);
   const [laserVisible, setLaserVisible] = useState(false);
   const [laserData, setLaserData] = useState(null);
   const [scorePopups, setScorePopups] = useState([]);
@@ -116,7 +117,8 @@ export default function GameScreen() {
           setScorePopups(prev => prev.filter(p => !hitBubbleIds.includes(p.id)));
         }, 500);
       }
-      return prevBubbles.filter(b => !hitBubbleIds.includes(b.id));
+      setPoppingBubbles(prev => [...prev, ...hitBubbleIds]);
+      return prevBubbles;
     });
   };
 
@@ -203,7 +205,20 @@ export default function GameScreen() {
       <TouchableWithoutFeedback onPress={handleTap} disabled={!gameStarted || gameOver}>
         <ImageBackground source={backgroundImg} style={styles.gameArea} resizeMode='cover'>
           <View style={{ flex: 1 }}>
-            {bubbles.map(b => (<Bubble key={`bubble-${b.id}`} x={b.x} y={b.y} radius={b.radius} color={b.color} />))}
+            {bubbles.map(b => (
+                <Bubble
+                    key={`bubble-${b.id}`}
+                    x={b.x}
+                    y={b.y}
+                    radius={b.radius}
+                    color={b.color}
+                    isPopping={poppingBubbles.includes(b.id)}
+                    onPopComplete={() => {
+                        setBubbles(prev => prev.filter(p => p.id !== b.id));
+                        setPoppingBubbles(prev => prev.filter(id => id !== b.id));
+                    }}
+                />
+            ))}
             {scorePopups.map(p => (<Text key={`popup-${p.id}`} style={{ position: 'absolute', left: p.x + 10, top: p.y - 20, color: 'white', fontSize: 22, fontWeight: 'bold' }}>+1</Text>))}
 
             {laserVisible && laserData && (
