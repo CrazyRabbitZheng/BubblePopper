@@ -17,7 +17,7 @@ const LASER_LENGTH = screenHeight * 1.5;
 export default function GameScreen() {
   const gunWidth = 390;
   const gunHeight = 300;
-  const tipOffset = 150;
+  const tipOffset = 134;
 
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
@@ -52,17 +52,21 @@ export default function GameScreen() {
 
   const handleTap = (event) => {
     if (!gameStarted || gameOver) return;
+
     const { locationX, locationY } = event.nativeEvent;
     const gunCenterX = gunPosition.x + gunWidth / 2;
     const gunCenterY = gunPosition.y + gunHeight / 2;
+
     const dx = locationX - gunCenterX;
     const dy = locationY - gunCenterY;
+
     const angle = Math.atan2(dy, dx);
-    setGunAngle(angle);
+    const correctedAngle = angle + Math.PI / 2;
+    setGunAngle(correctedAngle);
 
     const tipX = gunCenterX + tipOffset * Math.cos(angle);
     const tipY = gunCenterY + tipOffset * Math.sin(angle);
-    fireLaser(tipX, tipY, angle);
+    fireLaser(tipX, tipY, correctedAngle);
   };
 
   const fireLaser = (x, y, angle) => {
