@@ -45,7 +45,6 @@
 # Bubble Popper Game
 
 A React Native mobile game built with Expo CLI for CP4282 Programming for Mobile Devices.
-️❤️ Instructor - Shivaji Patil
 
 ## Game Description
 
