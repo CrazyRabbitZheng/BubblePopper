@@ -38,32 +38,38 @@
 # Bubble Popper Game
 
 A React Native mobile game built with Expo CLI for CP4282 Programming for Mobile Devices.
+️❤️ Instructor - Shivaji Patil
 
 ## Game Description
 
 Bubble Popper is a simple one-screen mobile game where:
 - Bubbles rise from the bottom of the screen every 0.5 seconds
-- Players tap anywhere to shoot a vertical red laser
+- Players tap anywhere to shoot a rainbow colored laser
 - Lasers pop bubbles for points (+1 point per bubble)
-- Game lasts for 120 seconds
+- Game lasts for 60 seconds
 - Final score is displayed with a "Play Again" option
 
-## Features Implemented
+## ✅ Features Implemented
 
-1. **Bubble Spawner**: Creates a circle every 0.5s at bottom with random x position
-2. **Bubble Motion**: Moves each bubble straight upward until it leaves the top
-3. **Laser Shot**: On any tap, draws a vertical red line from bottom that lasts 0.3s
-4. **Hit Test**: If laser crosses a bubble, removes bubble and adds +1 point
-5. **Score Label**: Shows "Score: N" in the top-left corner
-6. **Countdown Timer**: Starts at 120s, when it hits 0, freezes play and shows Game Over with final score and Play Again button
+1. **Bubble Spawner**: Spawns a bubble every 0.5s at the bottom with a random horizontal position and rainbow color.
+2. **Bubble Motion**: Each bubble moves straight upward until it exits the screen or gets popped.
+3. **Laser Shot**: On tap, fires a rainbow laser beam from the gun tip in the direction of the tap for 0.3s.
+4. **Hit Detection**: If the laser intersects a bubble, the bubble animates a pop and +1 point is awarded.
+5. **Score Display**: Shows `Score: N` in the top-left corner with animated +1 score popups.
+6. **Countdown Timer**: Starts at 60s. When it reaches 0, the game ends, and the final score with a **Play Again** button is shown.
+7. **Gun Control**: Gun is fully draggable and rotates to face the tap location before firing.
+8. **Sound Effects**: Bubble pop and laser firing play sound effects.
 
-## Tech Stack
+## ✅ Tech Stack
 
 - **Runtime**: Expo CLI
-- **Language**: Pure JavaScript (.js files)
+- **Language**: JavaScript (ES6+, `.js` files)
 - **Framework**: React Native
-- **Animation**: Built-in Animated API
-- **Input**: Built-in Pressable component
+- **Animation**: React Native Animated API (`Animated.View`)
+- **Input Handling**: `TouchableWithoutFeedback`, `PanResponder`
+- **Rendering**: `Svg`, `LinearGradient`, `Defs`, `Line` (from `react-native-svg`)
+- **Audio**: `expo-av` for laser and pop sound effects
+- **Image Rendering**: `Image`, `ImageBackground`, and `Animated.Image`
 
 ## File Structure
 
@@ -72,59 +78,22 @@ BubblePopper/
 ├── App.js                 # Main app component that registers GameScreen
 ├── GameScreen.js          # Game logic & hooks
 ├── components/
-│   ├── Bubble.js         # Circle view component
-│   └── Laser.js          # Temporary vertical line component
+│   └──  Bubble.js         # Circle view component
+│
 ├── package.json
 └── README.md
 ```
 
-## Installation & Setup
+##  ✅ How to Play
 
-1. Make sure you have Node.js installed
-2. Install Expo CLI globally (if not already installed):
-   ```bash
-   npm install -g @expo/cli
-   ```
-3. Navigate to the project directory:
-   ```bash
-   cd BubblePopper
-   ```
-4. Install dependencies:
-   ```bash
-   npm install
-   ```
+1. Tap **"Start Game"** to begin.
+2. Use your finger to **drag and position the rainbow gun** anywhere on the screen.
+3. Tap anywhere to **aim and shoot a rainbow laser** toward that direction.
+4. Bubbles will **spawn from the bottom** and float upward every 0.5 seconds.
+5. **Hit bubbles** with your laser to pop them and **earn +1 point** each.
+6. The game runs for **60 seconds** — try to score as high as possible! (The highest score players hit was 💕 80.)
+7. When time runs out, your **final score** is shown with a **"Play Again"** button.
 
-## Running the Game
-
-### On Android Emulator/Device
-```bash
-npm run android
-```
-
-### On iOS Simulator/Device (macOS only)
-```bash
-npm run ios
-```
-
-### On Web Browser
-```bash
-npm run web
-```
-
-### General Start (shows QR code for Expo Go app)
-```bash
-npm start
-```
-
-## How to Play
-
-1. Tap "Start Game" to begin
-2. Bubbles will start spawning from the bottom and floating upward
-3. Tap anywhere on the screen to shoot a red laser vertically
-4. Try to hit as many bubbles as possible within 120 seconds
-5. Each bubble hit gives you +1 point
-6. When time runs out, your final score is displayed
-7. Tap "Play Again" to restart
 
 ## Game Controls
 
@@ -135,16 +104,20 @@ npm start
 ## Scoring
 
 - Each bubble popped = +1 point
-- Game duration = 120 seconds
+- Game duration = 60 seconds
 - Goal: Get the highest score possible!
 
-## Development Notes
+## 🛠 Development Notes
 
-- Uses React hooks (useState, useEffect, useRef) for state management
-- Implements game loops using setInterval for bubble spawning and animation
-- Uses Pressable component for touch input handling
-- Collision detection between laser and bubbles using distance calculation
-- Responsive design that adapts to different screen sizes
+- Uses React hooks (`useState`, `useEffect`, `useRef`) for state, timers, and animation control.
+- Implements game loops with `setInterval` for bubble spawning and countdown timer.
+- Uses `PanResponder` for drag-based input and `TouchableWithoutFeedback` for tap-to-fire.
+- Collision detection uses **vector projection** from the laser line to each bubble's center.
+- Bubble popping is animated with `Animated.View` (scale and fade).
+- Responsive layout adapts to different screen sizes using `Dimensions.get('window')`.
+- Laser beam uses `react-native-svg` with a **rainbow gradient line**.
+- Audio effects are implemented using the `expo-av` package.
+
 
 ## Project Requirements Met
 
@@ -155,6 +128,8 @@ npm start
 ✅ Clean, readable code structure  
 ✅ Follows suggested file organization  
 
-## Author
+## Developer
+
+Zheng Wang  - CNA Software Development Student
 
 Created for CP4282 Programming for Mobile Devices - Spring 2025
