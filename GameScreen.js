@@ -7,7 +7,7 @@ import backgroundImg from './assets/sky.png';
 import popSoundFile from './assets/oneSecondBubblePopSound.wav';
 import laserSoundFile from './assets/laserGun.wav';
 import rainbowGun from './assets/rainbowGun.png';
-import Svg, { Line, Defs, LinearGradient, Stop } from 'react-native-svg';
+import Svg, { Line, Defs, LinearGradient, Stop, Circle } from 'react-native-svg';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 const rainbowColors = ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#8B00FF'];
@@ -18,6 +18,10 @@ export default function GameScreen() {
   const gunWidth = 75;
   const gunHeight = 300;
   const tipOffset = 149;
+
+const [debugPoints, setDebugPoints] = useState(null);
+const [tapHighlight, setTapHighlight] = useState(null);
+
 
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
@@ -53,40 +57,56 @@ export default function GameScreen() {
   const handleTap = (event) => {
     if (!gameStarted || gameOver) return;
 
-    const { locationX, locationY } = event.nativeEvent;
+    const tapX = event.nativeEvent.locationX;
+    const tapY = event.nativeEvent.locationY;
+
+    setTapHighlight({ x: tapX, y: tapY });
+        setTimeout(() => setTapHighlight(null), 500); // Hide after 300ms
+
     const gunCenterX = gunPosition.x + gunWidth / 2;
     const gunCenterY = gunPosition.y + gunHeight / 2;
 
-    const dx = locationX - gunCenterX;
-    const dy = locationY - gunCenterY;
-
+    const dx = tapX - gunCenterX;
+    const dy = tapY - gunCenterY;
     const angle = Math.atan2(dy, dx);
+
+    // Rotate gun so tip aligns from center to tap
     const correctedAngle = angle + Math.PI / 2;
-
-
     setGunAngle(correctedAngle);
 
+    // Calculate laser tip (still on that direction vector)
     const tipX = gunCenterX + tipOffset * Math.cos(angle);
     const tipY = gunCenterY + tipOffset * Math.sin(angle);
+
+
+
+setDebugPoints({
+  gunCenterX,
+  gunCenterY,
+  tipX,
+  tipY,
+  tapX,
+  tapY
+});
+
+
+
     fireLaser(tipX, tipY, angle);
-    const dirX = tipX -gunCenterX;
-    const dirY = tipY - gunCenterY;
-    const length = Math.sqrt(dirX * dirX + dirY * dirY);
-    const unitX = dirX / length;
-    const unitY = dirY / length;
 
-    const extendedX = gunCenterX + unitX * (screenHeight * 1.5);
-    const extendedY = gunCenterY + unitY * (screenHeight * 1.5);
+    const extendedX = tipX + Math.cos(angle) * LASER_LENGTH;
+    const extendedY = tipY + Math.sin(angle) * LASER_LENGTH;
+
     setGreenLinePoints({
-        x1: gunCenterX,
-        y1: gunCenterY,
-        x2: extendedX,
-        y2: extendedY
+      x1: tipX,
+      y1: tipY,
+      x2: extendedX,
+      y2: extendedY
     });
+
     setTimeout(() => setGreenLinePoints(null), 300);
-
-
   };
+
+
 
     const fireLaser = (x, y, angle) => {
         setLaserData({ x, y, angle });
@@ -249,7 +269,7 @@ const checkHits = (laserX, laserY, laserAngle) => {
             {scorePopups.map(p => (<Text key={`popup-${p.id}-${Math.random()}`} style={{ position: 'absolute', left: p.x + 10, top: p.y - 20, color: 'white', fontSize: 22, fontWeight: 'bold' }}>+1</Text>))}
 
 
-            {greenLinePoints && (
+            {(tapHighlight || debugPoints||  greenLinePoints) && (
                 <Svg
                     style={{
                         position: 'absolute',
@@ -259,6 +279,11 @@ const checkHits = (laserX, laserY, laserAngle) => {
                         height: screenHeight,
                     }}
                 >
+
+
+                {tapHighlight && (
+                    <Circle cx={tapHighlight.x} cy={tapHighlight.y} r={20} fill="red" />
+                  )}
                     {/* Define gradient in line */}
                     <Defs>
                         <LinearGradient id ="rainbowGradient" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -272,14 +297,31 @@ const checkHits = (laserX, laserY, laserAngle) => {
                         </LinearGradient>
                     </Defs>
 
-                    <Line
+                    {greenLinePoints && (
+                      <Line
                         x1={greenLinePoints.x1}
                         y1={greenLinePoints.y1}
                         x2={greenLinePoints.x2}
                         y2={greenLinePoints.y2}
                         stroke="url(#rainbowGradient)"
                         strokeWidth={4}
-                    />
+                      />
+                    )}
+
+
+               {debugPoints && (
+                 <>
+                   <Circle cx={debugPoints.gunCenterX} cy={debugPoints.gunCenterY} r={10} fill="white" />
+                   <Circle cx={debugPoints.tipX} cy={debugPoints.tipY} r={10} fill="yellow" />
+                   <Circle cx={debugPoints.tapX} cy={debugPoints.tapY} r={10} fill="lime" />
+
+                   <Line x1={debugPoints.gunCenterX} y1={debugPoints.gunCenterY} x2={debugPoints.tapX} y2={debugPoints.tapY} stroke="cyan" />
+                   <Line x1={debugPoints.gunCenterX} y1={debugPoints.gunCenterY} x2={debugPoints.tipX} y2={debugPoints.tipY} stroke="red" />
+                 </>
+               )}
+
+
+
                 </Svg>
             )}
 

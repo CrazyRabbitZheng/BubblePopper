@@ -37,6 +37,29 @@
 18. Changed TouchableWithoutFeedback to Pressable. 
     This ensures gun fires immediately when tapping. 
     Removed laser cool down to smooth the game experience.
+19. Issue with angle interpolation and rotation discontinuity 
+    — especially when working with angles in radians, 
+    where: 0 radians and 2π radians (≈ 6.28) represent the same angle (0° and 360°),
+    But React Native’s transform rotate system doesn’t handle that wrapping smoothly 
+    — so when the angle crosses from just below π to just above -π, the gun appears to "flip" suddenly.
+
+    More clearly speaking, when tapping around the gun in a circular pattern.
+    The gun rotates incrementally as expected.
+    But once near the 360° mark (or crossing the ±π boundary), it flips due to how the angle is handled.
+    
+    SOLUTION*******
+    Align the gun along the line from gun center to tap, 
+    and place the gun so that its tip lies somewhere between the center and tap point 
+    — not on the extended line beyond.
+    This is a geometry-based approach that avoids angle math entirely.
+    Let’s say: Point A = gun center, Point B = tap point. 
+    The gun aligned A → B, with the tip landing inside AB.
+    GUN CENTER ----> GUN TIP ----> TAP POINT
+    When tapping, the gun center is fixed.
+    Fixed tapping miss bug.
+    There was a segment rendering issue. I thought it was math, actually it was render sequence. and check null issue.
+20. 
+
 
 
 
