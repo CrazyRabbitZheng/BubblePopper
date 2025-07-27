@@ -13,26 +13,28 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 const rainbowColors = ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#8B00FF'];
 const LASER_LENGTH = screenHeight * 1.5;
 const LASER_THICKNESS = 4; //treat laser line as rectangle
+const debugMode = false; // Set to true if you want to see debug visuals. This debug is important. Somehow makes the game perfect.
+
 
 export default function GameScreen() {
-  const gunWidth = 75;
-  const gunHeight = 300;
-  const tipOffset = 149;
+    const gunWidth = 75;
+    const gunHeight = 300;
+    const tipOffset = 149;
 
-const [debugPoints, setDebugPoints] = useState(null);
-const [tapHighlight, setTapHighlight] = useState(null);
+    const [debugPoints, setDebugPoints] = useState(null);
+    const [tapHighlight, setTapHighlight] = useState(null);
 
 
-  const [gameStarted, setGameStarted] = useState(false);
-  const [gameOver, setGameOver] = useState(false);
-  const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(60);
-  const [bubbles, setBubbles] = useState([]);
-  const [poppingBubbles, setPoppingBubbles] = useState([]);
-  const [laserData, setLaserData] = useState(null);
-  const [greenLinePoints, setGreenLinePoints] = useState(null);
-  const [scorePopups, setScorePopups] = useState([]);
-  const [gunPosition, setGunPosition] = useState({
+    const [gameStarted, setGameStarted] = useState(false);
+    const [gameOver, setGameOver] = useState(false);
+    const [score, setScore] = useState(0);
+    const [timeLeft, setTimeLeft] = useState(60);
+    const [bubbles, setBubbles] = useState([]);
+    const [poppingBubbles, setPoppingBubbles] = useState([]);
+    const [laserData, setLaserData] = useState(null);
+    const [greenLinePoints, setGreenLinePoints] = useState(null);
+    const [scorePopups, setScorePopups] = useState([]);
+    const [gunPosition, setGunPosition] = useState({
     x: screenWidth / 2 - gunWidth / 2,
     y: screenHeight - 200,
   });
@@ -280,10 +282,12 @@ const checkHits = (laserX, laserY, laserAngle) => {
                     }}
                 >
 
-
-                {tapHighlight && (
+                {/* Show tapping point when debug mode is on. */}
+                {tapHighlight && debugMode && (
                     <Circle cx={tapHighlight.x} cy={tapHighlight.y} r={20} fill="red" />
                   )}
+
+
                     {/* Define gradient in line */}
                     <Defs>
                         <LinearGradient id ="rainbowGradient" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -297,6 +301,7 @@ const checkHits = (laserX, laserY, laserAngle) => {
                         </LinearGradient>
                     </Defs>
 
+                    {/* Green laser: always render. Named green line in design. Later changed to rainbow.*/}
                     {greenLinePoints && (
                       <Line
                         x1={greenLinePoints.x1}
@@ -308,8 +313,8 @@ const checkHits = (laserX, laserY, laserAngle) => {
                       />
                     )}
 
-
-               {debugPoints && (
+               {/* Debug visuals: render only if you set debugMode be true */}
+               {debugPoints && debugMode && (
                  <>
                    <Circle cx={debugPoints.gunCenterX} cy={debugPoints.gunCenterY} r={10} fill="white" />
                    <Circle cx={debugPoints.tipX} cy={debugPoints.tipY} r={10} fill="yellow" />
