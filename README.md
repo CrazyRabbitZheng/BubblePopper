@@ -34,6 +34,9 @@
 16. import Svg, { Line, Defs, LinearGradient, Stop} from 'react-native-svg'
     Made the gun beam displays 7 colors totally when you drag the gun to shot from different angle.
 17. Changed timer from 120s to 60s for easy outcome.
+18. Changed TouchableWithoutFeedback to Pressable. 
+    This ensures gun fires immediately when tapping. 
+    Removed laser cool down to smooth the game experience.
 
 
 
