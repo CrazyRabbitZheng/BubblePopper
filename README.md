@@ -112,8 +112,8 @@ Bubble Popper is a simple one-screen mobile game where:
 - **Language**: JavaScript (ES6+, `.js` files)
 - **Framework**: React Native
 - **Animation**: React Native Animated API (`Animated.View`)
-- **Input Handling**: `TouchableWithoutFeedback`, `PanResponder`
-- **Rendering**: `Svg`, `LinearGradient`, `Defs`, `Line` (from `react-native-svg`)
+- **Input Handling**: `Pressable`, `PanResponder`
+- **Rendering**: `Svg`, `LinearGradient`, `Defs`, `Line`, `Circle` (from `react-native-svg`)
 - **Audio**: `expo-av` for laser and pop sound effects
 - **Image Rendering**: `Image`, `ImageBackground`, and `Animated.Image`
 
