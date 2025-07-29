@@ -7,6 +7,8 @@ QR for apk of the app:
 
 <img width="314" height="321" alt="image" src="https://github.com/user-attachments/assets/6c0b4cfd-67a7-4087-95c7-cf612abd1d3b" />
 
+Game Demo Photo: 
+<img width="357" height="714" alt="image" src="https://github.com/user-attachments/assets/94e89aa9-f39e-4985-9ece-f796e617ce87" />
 
 1. Added customized background image.
 2. Changed bubble colors to rainbow
